@@ -1,45 +1,64 @@
 # Project 04 — IoT Motion Detector with Email Alert
-**Glowlogics IoT Projects Handbook | MEDIUM | ESP8266 + HC-SR501 PIR + IFTTT Webhook**
+**Glowlogics IoT Projects Handbook | MEDIUM | ESP8266 NodeMCU + HC-SR501 PIR + IFTTT Webhooks**
 
-This repository follows handbook Project 04. An ESP8266 reads an HC-SR501 PIR sensor. On motion, it lights a local LED and triggers an IFTTT Webhooks event configured to send an email (or another supported notification). A cooldown prevents repeated alerts.
+An ESP8266 reads an HC-SR501 PIR sensor. When motion is detected, the firmware turns on a local LED and sends an IFTTT Webhooks event configured to send an email (or another supported notification). A cooldown limits repeated alerts.
 
-**Verification status:** Firmware and setup instructions are provided. Physical PIR detection, Wi-Fi connection, IFTTT webhook delivery and email receipt have not been claimed as tested.
+## Handbook component checklist
+- ESP8266 NodeMCU ×1
+- HC-SR501 PIR sensor ×1
+- LED + 220Ω resistor ×1
+- Jumper wires ×5
+- Breadboard ×1
 
-## Components (handbook)
-ESP8266 NodeMCU (1); PIR sensor HC-SR501 (1); LED + 220 ohm resistor (1); jumper wires (5); breadboard (1).
+## Exact handbook pin mapping
+| Component | NodeMCU connection |
+|---|---|
+| PIR VCC | VIN / 5V (confirm module supply rating) |
+| PIR GND | GND |
+| PIR OUT | D2 / GPIO4 |
+| LED anode through 220Ω | D1 / GPIO5 |
+| LED cathode | GND |
 
-## Wiring
-- PIR VCC -> ESP8266 VIN / 5V (verify module supply specification).
-- PIR GND -> ESP8266 GND.
-- PIR OUT -> ESP8266 D2 / GPIO4.
-- LED anode through 220 ohm -> ESP8266 D1 / GPIO5.
-- LED cathode -> GND.
-ESP8266 GPIO is 3.3V only and is not 5V tolerant. Verify PIR OUT logic level; level-shift if needed.
+ESP8266 GPIO is 3.3V logic and is not 5V tolerant. Confirm PIR OUT high voltage from the exact module revision; use appropriate level conversion if required.
 
 ## IFTTT setup
 1. Sign in at https://ifttt.com.
-2. Create an Applet: If This = Webhooks, receive a web request; event name motion_detected.
+2. Create an Applet: If This = Webhooks, receive a web request with event name `motion_detected`.
 3. Then That = Gmail / Email, send an alert email.
 4. Open Webhooks documentation and copy the private key.
-5. Configure WIFI_SSID, WIFI_PASSWORD and IFTTT_WEBHOOK_KEY privately. Keep the event name identical to the Applet.
-6. Never publish the webhook key.
+5. Configure `WIFI_SSID`, `WIFI_PASSWORD`, and `IFTTT_WEBHOOK_KEY` in private build settings.
+6. Keep the event name identical and never publish the key.
 
 ## Firmware behavior
-Reads PIR digital output; LED follows motion; sends webhook on a LOW-to-HIGH motion edge; applies a 60-second cooldown after successful HTTP 200 response. Serial Monitor baud: 115200. Firmware source: src/main.cpp. PlatformIO target: env:nodemcuv2.
+- PIR input D2; LED output D1.
+- Webhook triggered on a LOW-to-HIGH motion edge.
+- 60-second cooldown after successful HTTP 200 response.
+- Serial Monitor: 115200 baud.
+- PlatformIO target: `env:nodemcuv2`.
 
-## Testing checklist
-- [ ] Confirm PIR supply and output voltage from exact module datasheet.
-- [ ] Confirm serial motion detection and LED indication.
-- [ ] Confirm Wi-Fi connection.
-- [ ] Trigger IFTTT event and verify actual email receipt.
-- [ ] Verify cooldown and record date, board revision and observations.
-These tests remain pending until actually performed.
+## Build
+```bash
+pio run -e nodemcuv2
+pio run -e nodemcuv2 -t upload
+pio device monitor -b 115200
+```
+
+## Verification record
+| Check | Status |
+|---|---|
+| Firmware compilation | Check latest GitHub Actions run |
+| Physical PIR motion detection | Not performed / no evidence supplied |
+| LED response | Not performed / no evidence supplied |
+| Wi-Fi association | Not performed / no evidence supplied |
+| IFTTT webhook and email receipt | Not performed / no evidence supplied |
+| Cooldown behavior | Not performed / no evidence supplied |
+
+Do not report any physical or service test as passed until actually performed and recorded. A green CI build is not hardware validation.
 
 ## Safety and limitations
-Educational prototype only, not a certified alarm or life-safety device. PIR sensors may miss or falsely detect motion due to placement, temperature, sunlight, pets and settings. Do not rely on it for security-critical monitoring. Keep wiring low voltage and dry. Demo firmware uses permissive TLS certificate handling; production use must validate the server certificate and protect the webhook key.
+Educational prototype only; not a certified alarm or life-safety device. PIR may miss or falsely detect motion. Keep the circuit low voltage and dry. The demo firmware uses permissive TLS certificate handling for ease of setup; production deployments must validate the server certificate and protect the webhook key.
 
 ## References
 - Glowlogics IoT Projects Handbook, Project 04.
 - ESP8266 Arduino Core: https://arduino-esp8266.readthedocs.io/
 - IFTTT Webhooks: https://ifttt.com/maker_webhooks
-- HC-SR501 exact module datasheet (verify supplier revision).
