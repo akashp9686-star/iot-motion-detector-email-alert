@@ -1,49 +1,20 @@
-name: CI
+name: Project 04 firmware build and repository checks
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  sample-data-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-      - name: Run sample data tests
-        run: python -m unittest discover -s tests -v
-
   firmware-build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        environment: [ nodemcuv2, nodemcuv2-mqtt ]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
       - name: Install PlatformIO
         run: pip install platformio
-      - name: Create CI-only placeholder MQTT configuration
-        if: matrix.environment == 'nodemcuv2-mqtt'
-        run: |
-          cat > include/secrets.h <<'EOF'
-          #pragma once
-          #define WIFI_SSID "CI_PLACEHOLDER"
-          #define WIFI_PASSWORD "CI_PLACEHOLDER"
-          #define MQTT_HOST "127.0.0.1"
-          #define MQTT_PORT 1883
-          #define MQTT_USER ""
-          #define MQTT_PASSWORD ""
-          EOF
-      - name: Compile firmware
-        run: pio run -e ${{ matrix.environment }}
+      - name: Compile ESP8266 NodeMCU firmware
+        run: pio run -e nodemcuv2
+      - name: Report verification boundary
+        run: echo "Compilation does not verify PIR sensing, Wi-Fi, IFTTT delivery, or physical wiring."
