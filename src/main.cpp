@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
+#include "config.h"
 #ifndef WIFI_SSID
 #define WIFI_SSID "YOUR_WIFI_NAME"
 #endif
@@ -32,10 +33,10 @@ bool sendWebhook(){
   client.setTimeout(8000);
   if(!client.connect(HOST,443)){ Serial.println(F("IFTTT HTTPS connection failed")); return false; }
   String path=String(F("/trigger/"))+IFTTT_EVENT_NAME+F("/with/key/")+IFTTT_WEBHOOK_KEY;
-  client.print(String(F("GET "))+path+F(" HTTP/1.1\r\nHost: ")+HOST+F("\r\nConnection: close\r\n\r\n"));
+  client.print(String(F("GET "))+path+F(" HTTP/1.1\\r\\nHost: ")+HOST+F("\\r\\nConnection: close\\r\\n\\r\\n"));
   unsigned long start=millis();
   while(!client.available() && client.connected() && millis()-start<8000){ delay(50); yield(); }
-  String status=client.readStringUntil('\n'); Serial.print(F("IFTTT response: ")); Serial.println(status);
+  String status=client.readStringUntil('\\n'); Serial.print(F("IFTTT response: ")); Serial.println(status);
   bool ok=status.indexOf("200")>=0; client.stop(); return ok;
 }
 void setup(){
@@ -48,7 +49,7 @@ void loop(){
   if(motion && !previousMotion){
     Serial.println(F("Motion detected."));
     if(!sentBefore || millis()-lastAlert>=COOLDOWN_MS){
-      if(connectWifi() && sendWebhook()){ lastAlert=millis(); sentBefore=true; Serial.println(F("Webhook accepted; verify email action.")); }
+      if(connectWifi() && sendWebhook()){ lastAlert=millis(); sentBefore=true; Serial.println(F("Webhook accepted; verify email action."); }
     } else Serial.println(F("Alert suppressed by cooldown."));
   }
   previousMotion=motion; delay(100);
