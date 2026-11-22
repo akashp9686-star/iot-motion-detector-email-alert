@@ -104,3 +104,8 @@ This is an educational prototype, not a certified parking, access-control, life-
 
 ## License
 MIT. See [LICENSE](LICENSE).
+
+
+## Evaluator guide
+
+See [docs/evaluator-guide.md](docs/evaluator-guide.md) for the review sequence, reproducible software checks and physical-validation limitations.
