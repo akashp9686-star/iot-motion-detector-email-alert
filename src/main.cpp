@@ -49,7 +49,7 @@ void loop(){
   if(motion && !previousMotion){
     Serial.println(F("Motion detected."));
     if(!sentBefore || millis()-lastAlert>=COOLDOWN_MS){
-      if(connectWifi() && sendWebhook()){ lastAlert=millis(); sentBefore=true; Serial.println(F("Webhook accepted; verify email action."); }
+      if(connectWifi() && sendWebhook()){ lastAlert=millis(); sentBefore=true; Serial.println(F("Webhook accepted; verify email action.")); }
     } else Serial.println(F("Alert suppressed by cooldown."));
   }
   previousMotion=motion; delay(100);
