@@ -1,7 +1,18 @@
-.pio/
-.vscode/
-.DS_Store
-__pycache__/
-.pytest_cache/
+# Local credentials — never commit
+include/config.h
 include/secrets.h
-*.pyc
+
+# PlatformIO
+.pio/
+.piolibdeps/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
