@@ -1,27 +1,20 @@
-# Submission Review Checklist
+# Submission Review Checklist — Project 04
 
-## Repository completeness
-- [x] Public GitHub repository created
-- [x] Project overview and objectives documented
-- [x] Firmware source included
-- [x] PlatformIO configuration included
-- [x] Hardware inventory and pin map documented
-- [x] Architecture and data flow documented
-- [x] Wiring and electrical safety notes included
-- [x] MQTT topic and payload documented
-- [x] Research references included
-- [x] Synthetic sample dataset and Python tests included
-- [x] GitHub Actions workflow included
-- [ ] Latest hosted CI run reviewed and passing
-- [ ] Physical prototype assembled and tested (not claimed)
-- [ ] Physical test evidence and photographs added (not supplied)
+## Repository
+- [x] Public GitHub repository and source code
+- [x] Project 04 overview and objectives
+- [x] ESP8266 NodeMCU firmware
+- [x] PlatformIO build configuration
+- [x] HC-SR501 PIR and LED component/pin mapping
+- [x] System architecture and wiring notes
+- [x] IFTTT Webhooks email setup
+- [x] Technical research and references
+- [x] Safety and limitations
+- [x] GitHub Actions workflow
+- [ ] Latest hosted CI result reviewed
+- [ ] Physical PIR and LED test performed
+- [ ] Wi-Fi, webhook and actual email delivery verified
+- [ ] Genuine hardware photographs / test evidence supplied
 
-## Important scope statement
-The project is prepared as a repository-based engineering submission. Software builds and synthetic-data checks are not substitutes for physical hardware validation. Confirm with the evaluator that repository-based evaluation is accepted before representing this work as a completed physical prototype.
-
-## Reviewer notes
-- Sensor output polarity must be checked against the exact IR module used.
-- I2C addresses must be confirmed on the actual OLED and PCF8574 boards.
-- ESP8266 inputs and I2C lines must remain within 3.3 V logic limits.
-- LED driver current limits and PCF8574 module wiring must be checked before powering.
-- MQTT integration needs a live broker test before it can be called verified.
+## Scope
+This repository documents the handbook's motion detector project. Do not mark physical or cloud tests passed based on source review or compilation. Confirm whether the evaluator accepts repository-based evaluation and whether a physical demonstration is mandatory.
