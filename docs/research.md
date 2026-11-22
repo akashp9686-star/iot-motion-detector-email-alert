@@ -1,28 +1,24 @@
-# Technical Research and Design Rationale
+# Technical Research — PIR Motion Detection and IFTTT Alerts
 
-This project combines low-cost digital sensing, an ESP8266 Wi-Fi microcontroller, an I2C display, an I/O expander and optional MQTT messaging.
+## PIR sensing
+The HC-SR501 is a passive infrared motion sensor module. It detects changes in infrared energy across its sensing zones and provides a digital output. Detection depends on module adjustment, warm-up time, field of view, target movement, temperature and placement. It is not a camera or identity-recognition device.
 
-## Design rationale
-- **ESP8266:** provides a compact microcontroller platform with integrated Wi-Fi suitable for an educational connected-device prototype.
-- **Digital IR obstacle sensors:** simple binary detection can demonstrate per-slot occupancy. Their output depends on module adjustment, target reflectivity, distance and ambient light; calibration is essential.
-- **SSD1306 OLED:** compact I2C display allows local status feedback without a separate display controller.
-- **PCF8574:** adds eight quasi-bidirectional I/O lines over I2C, reducing the number of ESP8266 GPIO pins needed for eight indicators.
-- **MQTT:** lightweight publish/subscribe messaging is suitable for sending state snapshots to a dashboard or monitoring service.
+## ESP8266 role
+The ESP8266 NodeMCU reads the PIR digital output and controls a low-voltage indicator LED. Its integrated Wi-Fi provides connectivity to the IFTTT Webhooks service. GPIO pins use 3.3V logic and are not 5V tolerant; verify the PIR output voltage for the exact board revision.
 
-## Engineering limitations and improvements
-1. Digital IR modules are not equivalent to automotive-grade presence sensors.
-2. A single instantaneous sample may flicker; add a stability window and hysteresis.
-3. Sensor disconnection should be distinguished from a vacant bay in a production system.
-4. MQTT reconnect logic, TLS and secure credential storage require further hardening.
-5. The current firmware has a fixed four-slot layout and does not provide remote control or access authorization.
+## Webhook notification flow
+When the PIR input transitions from LOW to HIGH, firmware sends an HTTPS request to the IFTTT Webhooks event endpoint. The configured IFTTT Applet then performs an email action. The firmware applies a 60-second cooldown after an HTTP 200 response. An HTTP success response indicates webhook acceptance, not proof that an email reached the recipient's inbox.
+
+## Security and reliability considerations
+- Treat the webhook key as a password; never commit it or expose it in screenshots.
+- Demo firmware uses permissive TLS certificate handling; production deployments must validate the server certificate.
+- Wi-Fi outages, service outages, email filtering, sensor placement and false detections can interrupt alerts.
+- This educational prototype is not a certified security alarm or life-safety device.
 
 ## References
-- Espressif Systems, ESP8266 Arduino Core documentation: https://arduino-esp8266.readthedocs.io/
-- PlatformIO, ESP8266 platform documentation: https://docs.platformio.org/en/latest/platforms/espressif8266.html
-- Adafruit SSD1306 library: https://github.com/adafruit/Adafruit_SSD1306
-- Adafruit GFX library: https://github.com/adafruit/Adafruit-GFX-Library
-- NXP, PCF8574 remote 8-bit I/O expander datasheet: https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf
-- OASIS, MQTT Version 3.1.1 specification: https://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html
-- Eclipse Paho / PubSubClient ecosystem: https://github.com/knolleary/pubsubclient
+- Glowlogics IoT Projects Handbook, Project 04.
+- Espressif ESP8266 Arduino Core: https://arduino-esp8266.readthedocs.io/
+- IFTTT Webhooks documentation: https://ifttt.com/maker_webhooks
+- HC-SR501 module documentation: verify the datasheet for the exact purchased module revision.
 
-References are provided for technical background; no claim is made that every cited component has been bench-tested in this project.
+References provide implementation background; no physical sensor or notification test is claimed by this document.
